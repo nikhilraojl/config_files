@@ -1,0 +1,2 @@
+
+$PSStyle.FileInfo.Directory = ''
