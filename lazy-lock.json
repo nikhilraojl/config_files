@@ -4,6 +4,7 @@
   "autoclose.nvim": { "branch": "main", "commit": "d8bebaaf8c48bd0cd0645d20592548eab279fea3" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "44b16d11215dce86f253ce0c30949813c0a90765" },
   "cmp_luasnip": { "branch": "master", "commit": "18095520391186d634a0045dacaa346291096566" },
+  "edgedb-vim": { "branch": "master", "commit": "7f2516bec3a5ad137347fb703d0b2c88f1478f5b" },
   "fidget.nvim": { "branch": "main", "commit": "0ba1e16d07627532b6cae915cc992ecac249fb97" },
   "friendly-snippets": { "branch": "main", "commit": "00e191fea2cfbbdd378243f35b5953296537a116" },
   "gitsigns.nvim": { "branch": "main", "commit": "d8590288417fef2430f85bc8b312fae8b1cf2c40" },
