@@ -503,6 +503,8 @@ local servers = {
     },
   },
   rust_analyzer = {},
+  gopls = {},
+  pylsp ={},
 }
 
 -- Setup neovim lua configuration
