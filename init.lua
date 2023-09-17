@@ -46,8 +46,13 @@ vim.g.maplocalleader = ' '
 vim.o.relativenumber = true
 
 -- Set default shell to powershell
-vim.g.terminal_emulator = "pwsh"
+if vim.loop.os_uname().sysname == "Windows_NT" then
+  vim.g.terminal_emulator = "pwsh"
+  -- vim.o.shell = "pwsh"
+end
 
+-- Set tab display width to 4 char cells
+vim.o.tabstop = 4
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
