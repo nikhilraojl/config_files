@@ -98,7 +98,7 @@ require('lazy').setup({
   { 'akinsho/toggleterm.nvim', version = "*", config = true },
 
   -- edgedb syntax highlighting
-  { 'edgedb/edgedb-vim' },
+  'edgedb/edgedb-vim',
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -136,7 +136,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim',    opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -299,6 +299,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   pattern = '*',
 })
 
+-- [[ Replace the word under the current cursor position]]
+vim.keymap.set('n', '<leader>rl', [[:s/<C-r><C-w>//g<Left><Left>]], { desc = '[R]eplace current word in [L]ine' })
+vim.keymap.set('n', '<leader>rf', [[:%s/<C-r><C-w>//g<Left><Left>]], { desc = '[R]eplace current word in entire [F]ile' })
+
+-- [[Remap netrw window]]
+vim.keymap.set('n', '<leader>ex', vim.cmd.Ex, { desc = "Open netrw file [EX]plorer" })
+
 -- When in terminal insert mode, pressing Esc
 -- goes back to normal mode
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
@@ -438,7 +445,7 @@ require('nvim-treesitter.configs').setup {
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 -- [[ Configure LSP ]]
@@ -509,7 +516,7 @@ local servers = {
   },
   rust_analyzer = {},
   gopls = {},
-  pylsp ={},
+  pylsp = {},
 }
 
 -- Setup neovim lua configuration
