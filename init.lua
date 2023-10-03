@@ -44,9 +44,14 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 -- set relative line numbers
 vim.o.relativenumber = true
+-- split right
+vim.o.splitright = true
+
+-- if Windows_NT
+local windows = vim.loop.os_uname().sysname == "Windows_NT"
 
 -- Set default shell to powershell
-if vim.loop.os_uname().sysname == "Windows_NT" then
+if windows then
   vim.g.terminal_emulator = "pwsh"
   -- vim.o.shell = "pwsh"
 end
@@ -306,6 +311,25 @@ vim.keymap.set('n', '<leader>rf', [[:%s/<C-r><C-w>//g<Left><Left>]], { desc = '[
 -- [[Remap netrw window]]
 vim.keymap.set('n', '<leader>ex', vim.cmd.Ex, { desc = "Open netrw file [EX]plorer" })
 
+-- [[window navigation command remaps]]
+-- Requires only single command to swtich instead of two
+vim.keymap.set('n', '<C-l>', '<C-w>l')
+vim.keymap.set('n', '<C-j>', '<C-w>j')
+vim.keymap.set('n', '<C-k>', '<C-w>k')
+vim.keymap.set('n', '<C-h>', '<C-w>h')
+
+-- [[Wrap brackets & quotes around selection]]
+-- "ts -> copy deleted text to register `t`
+-- ( -> insert opening bracket/quote
+-- <ESC>"tp -> goto normal mode paste text from register `t`
+-- `] -> goto end of pasted text using this marker
+-- a)<ESC> -> insert closing bracket/quote and goto normal mode
+vim.keymap.set('v', '<leader>)', '"ts(<ESC>"tp`]a)<ESC>')
+vim.keymap.set('v', '<leader>}', '"ts{<ESC>"tp`]a}<ESC>')
+vim.keymap.set('v', '<leader>]', '"ts[<ESC>"tp`]a]<ESC>')
+vim.keymap.set('v', "<leader>'", '"ts\'<ESC>"tp`]a\'<ESC>')
+vim.keymap.set('v', '<leader>"', '"ts\"<ESC>"tp`]a\"<ESC>')
+
 -- When in terminal insert mode, pressing Esc
 -- goes back to normal mode
 vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
@@ -326,9 +350,6 @@ require("toggleterm").setup({
 require('telescope').setup {
   defaults = {
     mappings = {
-      n = {
-        ['<C-d>'] = require('telescope.actions').delete_buffer,
-      },
       i = {
         ['<C-u>'] = false,
         ['<C-d>'] = false,
@@ -591,6 +612,20 @@ cmp.setup {
     { name = 'luasnip' },
   },
 }
+
+-- Command :Vst => [V]ertical [s]plit & open [t]erminal
+-- See :help nvim_create_user_command & :help nvim_command
+vim.api.nvim_create_user_command(
+  'Vst',
+  function()
+    if windows then
+      vim.api.nvim_command("vsplit term://pwsh")
+    else
+      vim.api.nvim_command("vsplit +term")
+    end
+  end,
+  {}
+)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
