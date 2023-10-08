@@ -58,6 +58,7 @@ end
 
 -- Set tab display width to 4 char cells
 vim.o.tabstop = 4
+vim.o.shiftwidth = 4
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -192,10 +193,17 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
+    main = "ibl",
     opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
+      indent = {
+        char = '┊',
+      },
+      scope = {
+        show_start = false,
+        show_end = false,
+        char = '|'
+      }
+    }
   },
 
   -- "gc" to comment visual regions/lines
@@ -377,6 +385,7 @@ vim.keymap.set('n', '<leader>f', require('telescope.builtin').find_files, { desc
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
 -- harpoon keymaps
@@ -387,6 +396,13 @@ vim.keymap.set('n', '<leader>1', function() require("harpoon.ui").nav_file(1) en
 vim.keymap.set('n', '<leader>2', function() require("harpoon.ui").nav_file(2) end, { desc = 'Goto [2] harpoon file' })
 vim.keymap.set('n', '<leader>3', function() require("harpoon.ui").nav_file(3) end, { desc = 'Goto [3] harpoon file' })
 vim.keymap.set('n', '<leader>4', function() require("harpoon.ui").nav_file(4) end, { desc = 'Goto [4] harpoon file' })
+
+--quickfix remaps
+vim.keymap.set('n', '=', function() vim.api.nvim_command('cnext') end, { desc = "Open next file in quickfix list" })
+vim.keymap.set('n', '-', function() vim.api.nvim_command('cprev') end, { desc = "Open previous file in quickfix list" })
+vim.keymap.set('n', '<leader>qo', function() vim.api.nvim_command('copen') end, { desc = "[Q]uickfix list [O]pen" })
+vim.keymap.set('n', '<leader>qc', function() vim.api.nvim_command('cclose') end, { desc = "[Q]uickfix list [C]lose" })
+
 
 -- comment.nvim keymaps
 local comment_api = require('Comment.api')
@@ -467,7 +483,7 @@ require('nvim-treesitter.configs').setup {
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+vim.keymap.set('n', '<leader>dl', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
@@ -538,6 +554,9 @@ local servers = {
   rust_analyzer = {},
   gopls = {},
   pylsp = {},
+  emmet_language_server = {
+    filetypes = { "css", "html", "javascript", "sass", "scss" },
+  }
 }
 
 -- Setup neovim lua configuration
@@ -626,6 +645,18 @@ vim.api.nvim_create_user_command(
   end,
   {}
 )
+
+-- autocommand to validate filename before saving
+-- TODO: validate only filename instead of entire path
+-- NOTE: this currently doesn't work on neovim see: https://github.com/neovim/neovim/issues/13928
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*',
+  callback = function(ev)
+    if string.find(ev.file, "\'") or string.find(ev.file, '"') then
+      error("file name contains quotes(\' or \")")
+    end
+  end
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
