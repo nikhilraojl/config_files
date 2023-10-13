@@ -159,7 +159,7 @@ require('lazy').setup({
         vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk,
           { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
         vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
-        vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
+        vim.keymap.set('n', '<leader>sp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[S]how [P]review hunk' })
       end,
     },
   },
@@ -403,6 +403,14 @@ vim.keymap.set('n', '-', function() vim.api.nvim_command('cprev') end, { desc = 
 vim.keymap.set('n', '<leader>qo', function() vim.api.nvim_command('copen') end, { desc = "[Q]uickfix list [O]pen" })
 vim.keymap.set('n', '<leader>qc', function() vim.api.nvim_command('cclose') end, { desc = "[Q]uickfix list [C]lose" })
 
+-- keep cursor in the middle during jumps
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', 'n', 'nzz')
+vim.keymap.set('n', 'N', 'Nzz')
+
+-- enter visual block mode 
+vim.keymap.set('x', '<leader>vb', '<C-V>', { desc = "[V]isual [B]lock mode"})
 
 -- comment.nvim keymaps
 local comment_api = require('Comment.api')
