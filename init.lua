@@ -325,6 +325,8 @@ vim.keymap.set('n', '<C-l>', '<C-w>l')
 vim.keymap.set('n', '<C-j>', '<C-w>j')
 vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-h>', '<C-w>h')
+vim.keymap.set('n', '>', '10<C-w>>')
+vim.keymap.set('n', '<', '10<C-w><')
 
 -- [[Wrap brackets & quotes around selection]]
 -- "ts -> copy deleted text to register `t`
@@ -335,6 +337,7 @@ vim.keymap.set('n', '<C-h>', '<C-w>h')
 vim.keymap.set('v', '<leader>)', '"ts(<ESC>"tp`]a)<ESC>')
 vim.keymap.set('v', '<leader>}', '"ts{<ESC>"tp`]a}<ESC>')
 vim.keymap.set('v', '<leader>]', '"ts[<ESC>"tp`]a]<ESC>')
+vim.keymap.set('v', '<leader>>', '"ts<<ESC>"tp`]a><ESC>')
 vim.keymap.set('v', "<leader>'", '"ts\'<ESC>"tp`]a\'<ESC>')
 vim.keymap.set('v', '<leader>"', '"ts\"<ESC>"tp`]a\"<ESC>')
 
@@ -384,7 +387,7 @@ vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc
 vim.keymap.set('n', '<leader>f', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
+vim.keymap.set('n', '<leader>F', require('telescope.builtin').live_grep, { desc = '[F]ind by Grep' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
@@ -522,7 +525,7 @@ local on_attach = function(_, bufnr)
 
   -- See `:help K` for why this keymap
   nmap('K', vim.lsp.buf.hover, 'Hover Documentation')
-  nmap('<C-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+  nmap('KK', vim.lsp.buf.signature_help, 'Signature Documentation')
 
   -- Lesser used LSP functionality
   nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
