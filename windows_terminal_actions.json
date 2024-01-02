@@ -1,0 +1,66 @@
+[
+  {
+    "command": {
+      "action": "copy",
+      "singleLine": false
+    },
+    "keys": "ctrl+c"
+  },
+  {
+    "command": "paste",
+    "keys": "ctrl+v"
+  },
+  {
+    "command": "find",
+    "keys": "ctrl+shift+f"
+  },
+  {
+    "command": {
+      "action": "splitPane",
+      "split": "auto",
+      "splitMode": "duplicate",
+      "initialCols": 30
+    },
+    "keys": "alt+shift+d"
+  },
+  {
+    "command": { "action": "moveFocus", "direction": "down" },
+    "keys": "alt+j"
+  },
+  {
+    "command": { "action": "moveFocus", "direction": "left" },
+    "keys": "alt+h"
+  },
+  {
+    "command": { "action": "moveFocus", "direction": "right" },
+    "keys": "alt+l"
+  },
+  { "command": { "action": "moveFocus", "direction": "up" }, "keys": "alt+k" },
+  { "command": { "action": "togglePaneZoom" }, "keys": "alt+\\" },
+
+  {
+    "command": { "action": "resizePane", "direction": "down" },
+    "keys": "alt+shift+j"
+  },
+  {
+    "command": { "action": "resizePane", "direction": "left" },
+    "keys": "alt+shift+h"
+  },
+  {
+    "command": { "action": "resizePane", "direction": "right" },
+    "keys": "alt+shift+l"
+  },
+  {
+    "command": { "action": "resizePane", "direction": "up" },
+    "keys": "alt+shift+k"
+  },
+  {
+    "command": { "action": "swapPane", "direction": "previousInOrder" },
+    "keys": "alt+>"
+  },
+  {
+    "command": { "action": "swapPane", "direction": "nextInOrder" },
+    "keys": "alt+<"
+  },
+  { "command": "toggleSplitOrientation", "keys": "alt+t" }
+]
