@@ -95,13 +95,13 @@ require('lazy').setup({
   'nvim-lua/plenary.nvim',
 
   -- harpoon
-  'ThePrimeagen/harpoon',
+  { 'ThePrimeagen/harpoon',    branch = "harpoon2" },
 
   -- autoclose brackets
   'm4xshen/autoclose.nvim',
 
   -- toggle term
-  { 'akinsho/toggleterm.nvim', version = "*", config = true },
+  { 'akinsho/toggleterm.nvim', version = "*",      config = true },
 
   -- edgedb syntax highlighting
   'edgedb/edgedb-vim',
@@ -142,7 +142,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',    opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -159,7 +159,8 @@ require('lazy').setup({
         vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk,
           { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
         vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
-        vim.keymap.set('n', '<leader>sp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[S]how [P]review hunk' })
+        vim.keymap.set('n', '<leader>sp', require('gitsigns').preview_hunk,
+          { buffer = bufnr, desc = '[S]how [P]review hunk' })
       end,
     },
   },
@@ -340,6 +341,7 @@ vim.keymap.set('v', '<leader>]', '"ts[<ESC>"tp`]a]<ESC>')
 vim.keymap.set('v', '<leader>>', '"ts<<ESC>"tp`]a><ESC>')
 vim.keymap.set('v', "<leader>'", '"ts\'<ESC>"tp`]a\'<ESC>')
 vim.keymap.set('v', '<leader>"', '"ts\"<ESC>"tp`]a\"<ESC>')
+vim.keymap.set('v', '<leader>`', '"ts`<ESC>"tp`]a`<ESC>')
 
 -- When in terminal insert mode, pressing Esc
 -- goes back to normal mode
@@ -347,6 +349,15 @@ vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]])
 
 -- [[ setup autoclose ]]
 require("autoclose").setup()
+
+-- [[ setup harpoon ]]
+local harpoon = require("harpoon")
+harpoon:setup({
+  settings = {
+    -- for persisting b/w restarts after modifying stuff in quick menu ui
+    save_on_toggle = true,
+  }
+})
 
 -- [[ setup toggleterm ]]
 require("toggleterm").setup({
@@ -392,13 +403,14 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
 -- harpoon keymaps
-vim.keymap.set('n', '<leader>i', require("harpoon.mark").add_file, { desc = '[I]nsert file to harpoon' })
-vim.keymap.set('n', '<leader>m', require("harpoon.ui").toggle_quick_menu, { desc = 'Toggle harpoon quick [M]enu' })
+vim.keymap.set('n', '<leader>i', function() harpoon:list():append() end, { desc = '[I]nsert file to harpoon' })
+vim.keymap.set('n', '<leader>m', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
+  { desc = 'Toggle harpoon quick [M]enu' })
 
-vim.keymap.set('n', '<leader>1', function() require("harpoon.ui").nav_file(1) end, { desc = 'Goto [1] harpoon file' })
-vim.keymap.set('n', '<leader>2', function() require("harpoon.ui").nav_file(2) end, { desc = 'Goto [2] harpoon file' })
-vim.keymap.set('n', '<leader>3', function() require("harpoon.ui").nav_file(3) end, { desc = 'Goto [3] harpoon file' })
-vim.keymap.set('n', '<leader>4', function() require("harpoon.ui").nav_file(4) end, { desc = 'Goto [4] harpoon file' })
+vim.keymap.set('n', '<leader>1', function() harpoon:list():select(1) end, { desc = 'Goto [1] harpoon file' })
+vim.keymap.set('n', '<leader>2', function() harpoon:list():select(2) end, { desc = 'Goto [2] harpoon file' })
+vim.keymap.set('n', '<leader>3', function() harpoon:list():select(3) end, { desc = 'Goto [3] harpoon file' })
+vim.keymap.set('n', '<leader>4', function() harpoon:list():select(4) end, { desc = 'Goto [4] harpoon file' })
 
 --quickfix remaps
 vim.keymap.set('n', '=', function() vim.api.nvim_command('cnext') end, { desc = "Open next file in quickfix list" })
@@ -412,12 +424,14 @@ vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', 'n', 'nzz')
 vim.keymap.set('n', 'N', 'Nzz')
 
--- enter visual block mode 
-vim.keymap.set('x', '<leader>vb', '<C-V>', { desc = "[V]isual [B]lock mode"})
+-- enter visual block mode
+-- this remap avoids using default paste `behaviour` on many shells
+vim.keymap.set('x', '<leader>vb', '<C-V>', { desc = "[V]isual [B]lock mode" })
 
--- comment.nvim keymaps
+-- [[ Configure comment.nvim keymaps ]]
 local comment_api = require('Comment.api')
--- use ctrl+/ for commenting single lines and multiple selected lines
+-- use ctrl+/ (which should be represented as [<C-_>] for some reason)
+-- for commenting single lines and multiple selected lines
 vim.keymap.set('n', '<C-_>', comment_api.toggle.linewise.current)
 vim.keymap.set(
   'x', '<C-_>', comment_api.call('toggle.linewise', 'g@'),
