@@ -1,6 +1,7 @@
-
+# For disabling colors for directories
 $PSStyle.FileInfo.Directory = ''
 
+# directory arg autocomplete for `op`
 $PROJECTSPATH = "$HOME\Projects\"
 $IGNOREDIR = "$HOME\Projects\deploys*"
 $opCommandCompletion = {
@@ -11,7 +12,9 @@ $opCommandCompletion = {
     
     $items
 }
+Register-ArgumentCompleter -Native -CommandName op -ScriptBlock $opCommandCompletion
 
+# Full autocomplete predictive text
 Set-PSReadLineKeyHandler -Key Ctrl+l `
                          -BriefDescription RemapForwardToCtrlL `
                          -ScriptBlock {
@@ -20,6 +23,7 @@ Set-PSReadLineKeyHandler -Key Ctrl+l `
     [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar($key, $arg)
 }
 
+# Full autocomplete predictive text
 Set-PSReadLineKeyHandler -Key Ctrl+Shift+l `
                          -BriefDescription RemapAceeptNextCharToCtrlL `
                          -ScriptBlock {
@@ -27,4 +31,3 @@ Set-PSReadLineKeyHandler -Key Ctrl+Shift+l `
     [Microsoft.PowerShell.PSConsoleReadLine]::AcceptNextSuggestionWord($key, $arg)
 }
 
-Register-ArgumentCompleter -Native -CommandName op -ScriptBlock $opCommandCompletion
