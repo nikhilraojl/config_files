@@ -318,16 +318,23 @@ vim.keymap.set('n', '<leader>rl', [[:s/<C-r><C-w>//g<Left><Left>]], { desc = '[R
 vim.keymap.set('n', '<leader>rf', [[:%s/<C-r><C-w>//g<Left><Left>]], { desc = '[R]eplace current word in entire [F]ile' })
 
 -- [[Remap netrw window]]
-vim.keymap.set('n', '<leader>ex', vim.cmd.Ex, { desc = "Open netrw file [EX]plorer" })
+vim.keymap.set('n', '<leader>e', vim.cmd.Ex, { desc = "Open netrw file [EX]plorer" })
 
--- [[window navigation command remaps]]
+-- [[window navigation remaps]]
 -- Requires only single command to swtich instead of two
 vim.keymap.set('n', '<C-l>', '<C-w>l')
 vim.keymap.set('n', '<C-j>', '<C-w>j')
 vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-h>', '<C-w>h')
-vim.keymap.set('n', '>', '10<C-w>>')
-vim.keymap.set('n', '<', '10<C-w><')
+
+-- [[window resize remaps]]
+-- Requires only single command to swtich instead of two
+vim.keymap.set('n', '<Right>', function() vim.cmd { cmd = 'winc', args = { ">" }, count = 20 } end)
+vim.keymap.set('n', '<Left>', function() vim.cmd { cmd = 'winc', args = { "<" }, count = 20 } end)
+vim.keymap.set('n', '<Up>', function() vim.cmd { cmd = 'winc', args = { "+" }, count = 10 } end)
+vim.keymap.set('n', '<Down>', function() vim.cmd { cmd = 'winc', args = { "-" }, count = 10 } end)
+vim.keymap.set('n', '<leader>=', function() vim.cmd { cmd = 'winc', args = { "=" } } end,
+  { desc = "Make all splits of Equal[=] size" })
 
 -- [[Wrap brackets & quotes around selection]]
 -- "ts -> copy deleted text to register `t`
