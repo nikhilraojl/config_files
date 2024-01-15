@@ -1,20 +1,41 @@
+local function magiclines(s)
+	-- iterator for strings as lines
+	if s:sub(-1) ~= "\n" then s = s .. "\n" end
+	return s:gmatch("(.-)\n")
+end
+
 local wezterm = require 'wezterm'
 local config = {}
 if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
--- windows specific changes
+-- used to set accent color if on windows
+local theme_color = 'orange'
+
+-- windows specific configuration
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
+	local success, stdout, _ = wezterm.run_child_process { 'cmd', '/c', 'reg.exe query hkey_current_user\\software\\microsoft\\windows\\dwm /f colorizationcolor /e' }
+
+	if success then
+		for line in magiclines(stdout) do
+			local found = string.find(line, 'ColorizationColor')
+			if found then
+				local _, _, value = line:match("^%s%s%s%s(.*)%s%s%s%s(.*)%s%s%s%s(.*)$")
+				theme_color = string.sub(value, 5)
+			end
+		end
+	end
+
 	config.default_prog = { 'pwsh' }
-	-- Add domain for auto importing VS 2022 dev tools
+	-- Add a powershell dev domain which auto imports VS 2022 dev tools
 	-- NOTE: This requires `VS_BUILDTOOLS_DIR` env to be set
 	local exec_domains = {}
 	local build_tools_dir = os.getenv('VS_BUILDTOOLS_DIR')
 	table.insert(exec_domains, wezterm.exec_domain('Dev Powershell vs22', function(cmd)
 		cmd.cwd = build_tools_dir
 		local args = {
-			'powershell.exe',
+			'pwsh',
 			'-NoExit',
 			'-Command',
 			'.\\Launch-VsDevShell.ps1'
@@ -35,8 +56,8 @@ config.font = wezterm.font_with_fallback {
 config.color_scheme = 'Batman'
 config.enable_scroll_bar = true
 config.colors = {
-	scrollbar_thumb = 'orange',
-	split = "orange"
+	scrollbar_thumb = theme_color,
+	split = theme_color
 }
 config.audible_bell = "Disabled"
 
