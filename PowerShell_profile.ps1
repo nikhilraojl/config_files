@@ -6,9 +6,8 @@
 # For disabling colors for directories
 $PSStyle.FileInfo.Directory = ''
 
-# directory arg autocomplete for `op`
-$PROJECTSPATH = "$HOME\Projects\"
-$IGNOREDIR = "$HOME\Projects\deploys*"
+# arg autocomplete for `op` 
+# REQUIRES: `op` program to be in path
 $opCommandCompletion = {
     # For why should we use these 3 specific parameters 
     # see powershell docs for `register-argumentcompleter` for `Native` command
@@ -27,10 +26,8 @@ $opCommandCompletion = {
         return
     }
 
-    # autocomplete list
-    $items = @(Get-ChildItem -Path "$PROJECTSPATH\*\$wordToComplete*" -Directory | 
-        Where-Object { $_.fullname -notlike $IGNOREDIR } |
-        Select-Object -ExpandProperty name )
+    # using outupt from the `op --list` command to build autocomplete list
+    $items = @(op --list | Where-Object {$_ -like "$wordToComplete*"})
 
     return $items
 }
