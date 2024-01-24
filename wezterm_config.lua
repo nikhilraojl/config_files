@@ -15,17 +15,17 @@ local theme_color = 'orange'
 
 -- windows specific configuration
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
-	-- local success, stdout, _ = wezterm.run_child_process { 'cmd', '/c', 'reg.exe query hkey_current_user\\software\\microsoft\\windows\\dwm /f colorizationcolor /e' }
+	local success, stdout, _ = wezterm.run_child_process { 'cmd', '/c', 'reg.exe query hkey_current_user\\software\\microsoft\\windows\\dwm /f colorizationcolor /e' }
 
-	-- if success then
-	-- 	for line in magiclines(stdout) do
-	-- 		local found = string.find(line, 'ColorizationColor')
-	-- 		if found then
-	-- 			local _, _, value = line:match("^%s%s%s%s(.*)%s%s%s%s(.*)%s%s%s%s(.*)$")
-	-- 			theme_color = string.sub(value, 5)
-	-- 		end
-	-- 	end
-	-- end
+	if success then
+		for line in magiclines(stdout) do
+			local found = string.find(line, 'ColorizationColor')
+			if found then
+				local _, _, value = line:match("^%s%s%s%s(.*)%s%s%s%s(.*)%s%s%s%s(.*)$")
+				theme_color = string.sub(value, 5)
+			end
+		end
+	end
 
 	config.default_prog = { 'pwsh' }
 	-- Add a powershell dev domain which auto imports VS 2022 dev tools
@@ -101,35 +101,51 @@ config.keys = {
 			cwd = wezterm.home_dir
 		}
 	},
-	{ key = '1',  mods = 'ALT',        action = act.ActivateTab(0) },
-	{ key = '2',  mods = 'ALT',        action = act.ActivateTab(1) },
-	{ key = '3',  mods = 'ALT',        action = act.ActivateTab(2) },
-	{ key = '4',  mods = 'ALT',        action = act.ActivateTab(3) },
-	{ key = 'w',  mods = 'CTRL|SHIFT', action = act.CloseCurrentTab { confirm = true } },
+	{ key = '1', mods = 'ALT',        action = act.ActivateTab(0) },
+	{ key = '2', mods = 'ALT',        action = act.ActivateTab(1) },
+	{ key = '3', mods = 'ALT',        action = act.ActivateTab(2) },
+	{ key = '4', mods = 'ALT',        action = act.ActivateTab(3) },
+	{ key = 'w', mods = 'CTRL|SHIFT', action = act.CloseCurrentTab { confirm = true } },
+
 	-- Window related keymaps
-	{ key = 'n',  mods = 'SHIFT|CTRL', action = act.SpawnWindow },
-	{ key = 'N',  mods = 'SHIFT|CTRL', action = act.SpawnWindow },
+	{ key = 'n', mods = 'SHIFT|CTRL', action = act.SpawnWindow },
+	{ key = 'N', mods = 'SHIFT|CTRL', action = act.SpawnWindow },
+	{
+		key = 'n',
+		mods = 'SHIFT|CTRL',
+		action = act.SpawnCommandInNewWindow {
+			cwd = wezterm.home_dir
+		}
+	},
+	{
+		key = 'N',
+		mods = 'SHIFT|CTRL',
+		action = act.SpawnCommandInNewWindow {
+			cwd = wezterm.home_dir
+		}
+	},
+
 	-- Pane handling keymaps
-	{ key = '+',  mods = 'ALT|SHIFT',  action = act.SplitPane { direction = 'Right' } },
-	{ key = '_',  mods = 'ALT|SHIFT',  action = act.SplitPane { direction = 'Down' } },
-	{ key = 'h',  mods = 'ALT|SHIFT',  action = act.AdjustPaneSize { 'Left', 10 } },
-	{ key = 'l',  mods = 'ALT|SHIFT',  action = act.AdjustPaneSize { 'Right', 10 } },
-	{ key = 'j',  mods = 'ALT|SHIFT',  action = act.AdjustPaneSize { 'Down', 3 } },
-	{ key = 'k',  mods = 'ALT|SHIFT',  action = act.AdjustPaneSize { 'Up', 3 } },
-	{ key = 'h',  mods = 'ALT',        action = act.ActivatePaneDirection('Left') },
-	{ key = 'l',  mods = 'ALT',        action = act.ActivatePaneDirection('Right') },
-	{ key = 'j',  mods = 'ALT',        action = act.ActivatePaneDirection('Down') },
-	{ key = 'k',  mods = 'ALT',        action = act.ActivatePaneDirection('Up') },
-	{ key = '\\', mods = 'ALT',        action = act.TogglePaneZoomState },
-	{ key = '>',  mods = 'ALT|SHIFT',  action = act.RotatePanes('Clockwise') },
-	{ key = '<',  mods = 'ALT|SHIFT',  action = act.RotatePanes('CounterClockwise') },
+	{ key = '+',  mods = 'ALT|SHIFT', action = act.SplitPane { direction = 'Right' } },
+	{ key = '_',  mods = 'ALT|SHIFT', action = act.SplitPane { direction = 'Down' } },
+	{ key = 'h',  mods = 'ALT|SHIFT', action = act.AdjustPaneSize { 'Left', 10 } },
+	{ key = 'l',  mods = 'ALT|SHIFT', action = act.AdjustPaneSize { 'Right', 10 } },
+	{ key = 'j',  mods = 'ALT|SHIFT', action = act.AdjustPaneSize { 'Down', 3 } },
+	{ key = 'k',  mods = 'ALT|SHIFT', action = act.AdjustPaneSize { 'Up', 3 } },
+	{ key = 'h',  mods = 'ALT',       action = act.ActivatePaneDirection('Left') },
+	{ key = 'l',  mods = 'ALT',       action = act.ActivatePaneDirection('Right') },
+	{ key = 'j',  mods = 'ALT',       action = act.ActivatePaneDirection('Down') },
+	{ key = 'k',  mods = 'ALT',       action = act.ActivatePaneDirection('Up') },
+	{ key = '\\', mods = 'ALT',       action = act.TogglePaneZoomState },
+	{ key = '>',  mods = 'ALT|SHIFT', action = act.RotatePanes('Clockwise') },
+	{ key = '<',  mods = 'ALT|SHIFT', action = act.RotatePanes('CounterClockwise') },
 	-- copy mode & search mode keymaps
-	{ key = 'x',  mods = 'ALT',        action = act.ActivateCopyMode },
-	{ key = 'x',  mods = 'SHIFT|ALT',  action = act.ActivateCopyMode },
-	{ key = '/',  mods = 'ALT',        action = act.Search 'CurrentSelectionOrEmptyString' },
+	{ key = 'x',  mods = 'ALT',       action = act.ActivateCopyMode },
+	{ key = 'x',  mods = 'SHIFT|ALT', action = act.ActivateCopyMode },
+	{ key = '/',  mods = 'ALT',       action = act.Search 'CurrentSelectionOrEmptyString' },
 	-- launcher keymaps
-	{ key = 'p',  mods = 'ALT',        action = wezterm.action.ShowLauncher },
-	{ key = 'p',  mods = 'ALT|SHIFT',  action = wezterm.action.ShowLauncherArgs { flags = 'DOMAINS' } },
-	{ key = 'P',  mods = 'ALT',        action = wezterm.action.ShowLauncherArgs { flags = 'DOMAINS' } },
+	{ key = 'p',  mods = 'ALT',       action = wezterm.action.ShowLauncher },
+	{ key = 'p',  mods = 'ALT|SHIFT', action = wezterm.action.ShowLauncherArgs { flags = 'DOMAINS' } },
+	{ key = 'P',  mods = 'ALT',       action = wezterm.action.ShowLauncherArgs { flags = 'DOMAINS' } },
 }
 return config
