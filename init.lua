@@ -432,6 +432,8 @@ vim.keymap.set('n', '<leader>qc', function() vim.api.nvim_command('cclose') end,
 -- keep cursor in the middle during jumps
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-i>', '<C-i>zz')
+vim.keymap.set('n', '<C-o>', '<C-o>zz')
 vim.keymap.set('n', 'n', 'nzz')
 vim.keymap.set('n', 'N', 'Nzz')
 
@@ -589,10 +591,10 @@ local servers = {
     },
     rust_analyzer = {},
     gopls = {},
-    pylsp = {},
+    pyright = {},
     emmet_language_server = {
         filetypes = { "css", "html", "javascript", "sass", "scss" },
-    }
+    },
 }
 
 -- Setup neovim lua configuration
