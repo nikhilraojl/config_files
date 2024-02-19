@@ -6,7 +6,7 @@
 # For disabling colors for directories
 $PSStyle.FileInfo.Directory = ''
 
-# arg autocomplete for `op` 
+# arg autocomplete for `op`
 # REQUIRES: `op` program to be in path
 $opCommandCompletion = {
     # For why should we use these 3 specific parameters 
@@ -19,10 +19,12 @@ $opCommandCompletion = {
     # after the first argument. Maybe a better way exists but this 
     # works for now
     $spaces = $commandAst.ToString().Split(" ").GetUpperBound(0)
-    if (($wordToComplete -and ($spaces -gt 1)) ) {
+    if (($wordToComplete -and ($spaces -gt 1)) )
+    {
         return
     }
-    if ((-not $wordToComplete -and ($spaces -ge 1)) ) {
+    if ((-not $wordToComplete -and ($spaces -ge 1)) )
+    {
         return
     }
 
@@ -33,7 +35,43 @@ $opCommandCompletion = {
 }
 Register-ArgumentCompleter -Native -CommandName op -ScriptBlock $opCommandCompletion
 
-# Full autocomplete predictive text
+# git autocomplete
+# REQUIRES: `git` program to be in path
+$gitCommandCompletion = {
+    # For why should we use these 3 specific parameters 
+    # see powershell docs for `register-argumentcompleter` for `Native` command
+    param ( $wordToComplete,
+        $commandAst,
+        $cursorPosition )
+    
+    $stringifiedAst = $commandAst.ToString().Split(" ")
+    $paramName = $stringifiedAst[1]
+    if ($paramName -eq "add")
+    {
+        # HELP: https://git-scm.com/docs/git-ls-files
+        $files =  @(git ls-files --modified --others --exclude-standard | Where-Object {$_ -like "$wordToComplete*"})
+        return $files
+    }
+
+    if ($paramName -eq "restore")
+    {
+        $restoreOption = $stringifiedAst[2] 
+        if ($restoreOption -eq "--staged") 
+        {
+            # `git ls-files` does not have an option which can show changes to be committed files only
+            $files =  @( git diff --staged --name-only | Where-Object {$_ -like "$wordToComplete*"})
+            return $files
+        }
+
+        $files =  @( git ls-files --modified | Where-Object {$_ -like "$wordToComplete*"})
+        return $files
+    } 
+    
+    return 
+}
+Register-ArgumentCompleter -Native -CommandName git -ScriptBlock $gitCommandCompletion
+
+# Complete full line predictive text
 Set-PSReadLineKeyHandler -Key Ctrl+l `
     -BriefDescription RemapForwardToCtrlL `
     -ScriptBlock {
@@ -42,7 +80,7 @@ Set-PSReadLineKeyHandler -Key Ctrl+l `
     [Microsoft.PowerShell.PSConsoleReadLine]::ForwardChar($key, $arg)
 }
 
-# Single word autocomplete predictive text
+# Complete single word predictive text
 Set-PSReadLineKeyHandler -Key Ctrl+Shift+l `
     -BriefDescription RemapAceeptNextCharToCtrlL `
     -ScriptBlock {
@@ -52,15 +90,17 @@ Set-PSReadLineKeyHandler -Key Ctrl+Shift+l `
 
 # Elevate to administrator from a shell
 # opens new windows terminal as administrator
-function Get-AdminWTShell {
+function Get-AdminWTShell
+{
     Start-process wt -Verb runAs
 }
 Set-Alias -Name su -Value Get-AdminWTShell
 
 # Elevate to administrator from a shell 
 # opens new wezterm as administrator
-# REQUIRES: wezterms to be installed
-function Get-AdminWezterm {
+# REQUIRES: wezterm to be installed
+function Get-AdminWezterm
+{
     Start-process wezterm -WindowStyle Hidden -Verb runAs
 }
 Set-Alias -Name sudow -Value Get-AdminWezterm
