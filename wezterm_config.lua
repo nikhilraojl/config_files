@@ -38,7 +38,11 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 			'pwsh',
 			'-NoExit',
 			'-Command',
-			'.\\Launch-VsDevShell.ps1'
+			'.\\Launch-VsDevShell.ps1',
+			'-Arch',
+			'amd64',
+			'-HostArch',
+			'amd64',
 			-- use below if `Launch-VsDevShell.ps1` doesn't work
 			-- '&{Import-Module <build_tools_dir>; Enter-VsDevShell <hash> -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"};',
 		}
