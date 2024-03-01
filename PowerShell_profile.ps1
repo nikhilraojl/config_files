@@ -52,19 +52,47 @@ $gitCommandCompletion = {
         $files =  @(git ls-files --modified --others --exclude-standard | Where-Object {$_ -like "$wordToComplete*"})
         return $files
     }
+    
+    if ($paramName -eq "diff")
+    {
+        # HELP: https://git-scm.com/docs/git-branch
+        # HELP: https://git-scm.com/docs/git-for-each-ref#_field_names
+        $files =  @(git ls-files --modified | Where-Object {$_ -like "$wordToComplete*"})
+        return $files
+    }
+
+    if ($paramName -eq "switch")
+    {
+        # HELP: https://git-scm.com/docs/git-ls-files
+        $files =  @(git branch -a --format="%(refname:lstrip=-1)" | Where-Object {$_ -like "$wordToComplete*"})
+        return $files
+    }
 
     if ($paramName -eq "restore")
     {
         $restoreOption = $stringifiedAst[2] 
         if ($restoreOption -eq "--staged") 
         {
-            # `git ls-files` does not have an option which can show changes to be committed files only
+            # `git ls-files` does not have an option which can only show files with changes to be committed
+            # HELP: https://git-scm.com/docs/git-diff
             $files =  @( git diff --staged --name-only | Where-Object {$_ -like "$wordToComplete*"})
             return $files
         }
 
         $files =  @( git ls-files --modified | Where-Object {$_ -like "$wordToComplete*"})
         return $files
+    } 
+    
+    if ($paramName -eq "branch")
+    {
+        $branchFlag = $stringifiedAst[2] 
+        if (($branchFlag -eq "-d") -or ($branchFlag -eq "-D"))
+        {
+            # HELP: https://git-scm.com/docs/git-branch
+            # HELP: https://git-scm.com/docs/git-for-each-ref#_field_names
+            $branches =  @( git branch --format="%(refname:short)" | Where-Object {$_ -like "$wordToComplete*"})
+            return $branches
+        }
     } 
     
     return 
