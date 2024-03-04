@@ -6,6 +6,27 @@
 # For disabling colors for directories
 $PSStyle.FileInfo.Directory = ''
 
+# helper function to stop auto complete
+function Get-FirstArgumentCompleted
+{
+    param ($wordToComplete, $spaces)
+    
+    # These couple of `if` blocks are there to check if first parameter is
+    # autocompleted. We can use this to stop further autocompletion or generate
+    # different output.
+    # Maybe a better way exists but this works for now
+    if (($wordToComplete -and ($spaces -gt 1)) )
+    {
+        return $true
+    }
+    if ((-not $wordToComplete -and ($spaces -ge 1)) )
+    {
+        return $true
+    }
+
+    return $false
+}
+
 # arg autocomplete for `op`
 # REQUIRES: `op` program to be in path
 $opCommandCompletion = {
@@ -15,23 +36,13 @@ $opCommandCompletion = {
         $commandAst,
         $cursorPosition )
     
-    # The next couple of `if` blocks are there to stop autocomplete
-    # after the first argument. Maybe a better way exists but this 
-    # works for now
     $spaces = $commandAst.ToString().Split(" ").GetUpperBound(0)
-    if (($wordToComplete -and ($spaces -gt 1)) )
+    if (-not (Get-FirstArgumentCompleted $wordToComplete $spaces))
     {
-        return
+        # using outupt from the `op --list` command to build autocomplete list
+        $items = @(op --list | Where-Object {$_ -like "$wordToComplete*"})
+        return $items
     }
-    if ((-not $wordToComplete -and ($spaces -ge 1)) )
-    {
-        return
-    }
-
-    # using outupt from the `op --list` command to build autocomplete list
-    $items = @(op --list | Where-Object {$_ -like "$wordToComplete*"})
-
-    return $items
 }
 Register-ArgumentCompleter -Native -CommandName op -ScriptBlock $opCommandCompletion
 
@@ -45,6 +56,17 @@ $gitCommandCompletion = {
         $cursorPosition )
     
     $stringifiedAst = $commandAst.ToString().Split(" ")
+    $spaces = $stringifiedAst.GetUpperBound(0)
+
+    # autocompletions for first arguments
+    if (-not (Get-FirstArgumentCompleted $wordToComplete $spaces))
+    {
+        $possibleCommands = 'add','branch','checkout','commit','diff','rebase','remote','reset','restore','stash', 'status','switch'
+        $branches =  @( $possibleCommands | Where-Object {$_ -like "$wordToComplete*"})
+        return $branches
+    }
+
+    # autocompletions for more arguments
     $paramName = $stringifiedAst[1]
     if ($paramName -eq "add")
     {
@@ -52,7 +74,7 @@ $gitCommandCompletion = {
         $files =  @(git ls-files --modified --others --exclude-standard | Where-Object {$_ -like "$wordToComplete*"})
         return $files
     }
-    
+
     if ($paramName -eq "diff")
     {
         # HELP: https://git-scm.com/docs/git-branch
@@ -82,7 +104,7 @@ $gitCommandCompletion = {
         $files =  @( git ls-files --modified | Where-Object {$_ -like "$wordToComplete*"})
         return $files
     } 
-    
+
     if ($paramName -eq "branch")
     {
         $branchFlag = $stringifiedAst[2] 
