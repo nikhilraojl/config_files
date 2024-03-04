@@ -332,21 +332,21 @@ require("lazy").setup({
 			on_attach = function(bufnr)
 				vim.keymap.set(
 					"n",
-					"<leader>gp",
+					"<leader>pd",
 					require("gitsigns").prev_hunk,
-					{ buffer = bufnr, desc = "[G]o to [P]revious Hunk" }
+					{ buffer = bufnr, desc = "Go to [P]revious [D]iff" }
 				)
 				vim.keymap.set(
 					"n",
-					"<leader>gn",
+					"<leader>nd",
 					require("gitsigns").next_hunk,
-					{ buffer = bufnr, desc = "[G]o to [N]ext Hunk" }
+					{ buffer = bufnr, desc = "Go to [N]ext [D]iff" }
 				)
 				vim.keymap.set(
 					"n",
-					"<leader>sp",
+					"<leader>sd",
 					require("gitsigns").preview_hunk,
-					{ buffer = bufnr, desc = "[S]how [P]review hunk" }
+					{ buffer = bufnr, desc = "Show [P]review [D]iff" }
 				)
 			end,
 		},
@@ -358,9 +358,9 @@ require("lazy").setup({
 	-- lazy loading plugins that don't need to be loaded immediately at startup.
 	--
 	-- For example, in the following configuration, we use:
-	--  event = 'VeryLazy'
+	--  event = 'VimEnter'
 	--
-	-- which loads which-key after all the UI elements are loaded. Events can be
+	-- which loads which-key before all the UI elements are loaded. Events can be
 	-- normal autocommands events (:help autocomd-events).
 	--
 	-- Then, because we use the `config` key, the configuration only runs
@@ -369,7 +369,7 @@ require("lazy").setup({
 
 	{ -- Useful plugin to show you pending keybinds.
 		"folke/which-key.nvim",
-		event = "VeryLazy", -- Sets the loading event to 'VeryLazy'
+		event = "VimEnter", -- Sets the loading event to 'VeryLazy'
 		config = function() -- This is the function that runs, AFTER loading
 			require("which-key").setup()
 
@@ -393,7 +393,7 @@ require("lazy").setup({
 
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
-		event = "VeryLazy",
+		event = "VimEnter",
 		branch = "0.1.x",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -633,6 +633,11 @@ require("lazy").setup({
 					--  For example, in C this would take you to the header
 					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
+					-- Create a command `:Fmt` local to the LSP buffer
+					vim.api.nvim_buf_create_user_command(event.buf, "Fmt", function(_)
+						vim.lsp.buf.format()
+					end, { desc = "Format current buffer with LSP" })
+
 					-- The following two autocommands are used to highlight references of the
 					-- word under your cursor when your cursor rests there for a little while.
 					--    See `:help CursorHold` for information about when this is executed
@@ -675,8 +680,9 @@ require("lazy").setup({
 				pyright = {},
 				rust_analyzer = {},
 				emmet_language_server = {
-					filetypes = { "css", "html", "javascript", "sass", "scss" },
+					filetypes = { "css", "html", "sass", "scss" },
 				},
+				tsserver = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
 				-- Some languages (like typescript) have entire language plugins that can be useful:
@@ -731,15 +737,11 @@ require("lazy").setup({
 				handlers = {
 					function(server_name)
 						local server = servers[server_name] or {}
-						require("lspconfig")[server_name].setup({
-							cmd = server.cmd,
-							settings = server.settings,
-							filetypes = server.filetypes,
-							-- This handles overriding only values explicitly passed
-							-- by the server configuration above. Useful when disabling
-							-- certain features of an LSP (for example, turning off formatting for tsserver)
-							capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {}),
-						})
+						-- This handles overriding only values explicitly passed
+						-- by the server configuration above. Useful when disabling
+						-- certain features of an LSP (for example, turning off formatting for tsserver)
+						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+						require("lspconfig")[server_name].setup(server)
 					end,
 				},
 			})
@@ -752,12 +754,12 @@ require("lazy").setup({
 			notify_on_error = false,
 			format_on_save = {
 				timeout_ms = 500,
-				lsp_fallback = true,
+				lsp_fallback = false,
 			},
 			formatters_by_ft = {
 				lua = { "stylua" },
 				-- Conform can also run multiple formatters sequentially
-				-- python = { "isort", "black" },
+				python = { "black" },
 				--
 				-- You can use a sub-list to tell conform to run *until* a formatter
 				-- is found.
@@ -862,9 +864,13 @@ require("lazy").setup({
 	{
 		-- Theme inspired by Atom
 		"navarasu/onedark.nvim",
+		-- switch to this theme using :colorscheme onedark . See `:help colorscheme`
+	},
+	{
+		"neanias/everforest-nvim",
 		priority = 1000,
 		config = function()
-			vim.cmd.colorscheme("onedark")
+			vim.cmd.colorscheme("everforest")
 		end,
 	},
 
@@ -886,7 +892,12 @@ require("lazy").setup({
 	-- },
 
 	-- Highlight todo, notes, etc in comments
-	{ "folke/todo-comments.nvim", dependencies = { "nvim-lua/plenary.nvim" }, opts = { signs = false } },
+	{
+		"folke/todo-comments.nvim",
+		event = "VimEnter",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = { signs = false },
+	},
 
 	{ -- Collection of various small independent plugins/modules
 		"echasnovski/mini.nvim",
@@ -924,9 +935,26 @@ require("lazy").setup({
 
 			---@diagnostic disable-next-line: missing-fields
 			require("nvim-treesitter.configs").setup({
-				ensure_installed = { "bash", "c", "html", "lua", "markdown", "vim", "vimdoc", "python", "rust", "go" },
+				ensure_installed = {
+					"bash",
+					"c",
+					"html",
+					"lua",
+					"markdown",
+					"vim",
+					"vimdoc",
+					"python",
+					"rust",
+					"go",
+					"css",
+					"javascript",
+					"typescript",
+					"yaml",
+					"toml",
+					"json",
+				},
 				-- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-				auto_install = true,
+				auto_install = false,
 				highlight = { enable = true },
 				indent = { enable = true },
 			})
@@ -959,6 +987,18 @@ require("lazy").setup({
 	--    For additional information see: :help lazy.nvim-lazy.nvim-structuring-your-plugins
 	-- { import = 'custom.plugins' },
 }, {})
+
+-- [[Personal auto commands]]
+-- Command :Vst => [V]ertical [s]plit & open [t]erminal
+-- See :help nvim_create_user_command & :help nvim_command
+vim.api.nvim_create_user_command("Vst", function()
+	local windows = vim.fn.has("win32")
+	if windows then
+		vim.api.nvim_command("vsplit term://pwsh")
+	else
+		vim.api.nvim_command("vsplit +term")
+	end
+end, {})
 
 -- autocommand to validate filename before saving
 -- TODO: validate only filename instead of entire path
