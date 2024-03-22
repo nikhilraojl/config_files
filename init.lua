@@ -156,10 +156,10 @@ vim.opt.hlsearch = true
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Diagnostic keymaps
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous [D]iagnostic message" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next [D]iagnostic message" })
-vim.keymap.set("n", "<leader>E", vim.diagnostic.open_float, { desc = "Show diagnostic [E]rror messages" })
-vim.keymap.set("n", "<leader>ql", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix [L]ist" })
+vim.keymap.set("n", "[e", vim.diagnostic.goto_prev, { desc = "Go to previous Diagnostic/[E]rror message" })
+vim.keymap.set("n", "]e", vim.diagnostic.goto_next, { desc = "Go to next Diagnostic/[E]rror message" })
+vim.keymap.set("n", "<leader>E", vim.diagnostic.open_float, { desc = "Show Diagnostic/[E]rror messages" })
+vim.keymap.set("n", "<leader>el", vim.diagnostic.setloclist, { desc = "Open Diagnostic/[E]rror Quickfix [L]ist" })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -241,8 +241,6 @@ vim.keymap.set("v", "<leader>`", '"ts`<ESC>"tp`]a`<ESC>')
 -- keep cursor in the middle during jumps
 vim.keymap.set("n", "<C-i>", "<C-i>zz")
 vim.keymap.set("n", "<C-o>", "<C-o>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "n", "nzz")
 vim.keymap.set("n", "N", "Nzz")
 
@@ -332,22 +330,20 @@ require("lazy").setup({
 			on_attach = function(bufnr)
 				vim.keymap.set(
 					"n",
-					"<leader>pd",
+					"[d",
 					require("gitsigns").prev_hunk,
-					{ buffer = bufnr, desc = "Go to [P]revious [D]iff" }
+					{ buffer = bufnr, desc = "Go to previous [D]iff" }
 				)
-				vim.keymap.set(
-					"n",
-					"<leader>nd",
-					require("gitsigns").next_hunk,
-					{ buffer = bufnr, desc = "Go to [N]ext [D]iff" }
-				)
+				vim.keymap.set("n", "]d", require("gitsigns").next_hunk, { buffer = bufnr, desc = "Go to next [D]iff" })
 				vim.keymap.set(
 					"n",
 					"<leader>sd",
 					require("gitsigns").preview_hunk,
-					{ buffer = bufnr, desc = "Show [P]review [D]iff" }
+					{ buffer = bufnr, desc = "[S]how Preview [D]iff" }
 				)
+				vim.keymap.set("n", "<leader>sb", function()
+					require("gitsigns").blame_line({ full = true })
+				end, { buffer = bufnr, desc = "[S]how [B]lame" })
 			end,
 		},
 	},
@@ -530,6 +526,18 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>4", function()
 				harpoon:list():select(4)
 			end, { desc = "Goto [4] harpoon file" })
+		end,
+	},
+
+	-- Plugin for viewing markdown file in browser as it is being edited
+	-- Use install script in `nvim-data/lazy/<plugin>/app` if commands don't work
+	-- Using in WSL will have some issues, refer plugin README
+	{
+		"iamcco/markdown-preview.nvim",
+		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+		ft = { "markdown" },
+		build = function()
+			vim.fn["mkdp#util#install"]()
 		end,
 	},
 
