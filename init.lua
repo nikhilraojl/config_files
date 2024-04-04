@@ -1008,6 +1008,14 @@ vim.api.nvim_create_user_command("Vst", function()
 	end
 end, {})
 
+-- Command :WezSplit => [Wez]term [Split] pane
+-- See :help nvim_create_user_command & :help nvim_exec2
+-- WHY : Sometimes in a linux shell, splitting a pane does not chdir to opened neovim project
+-- automatically. This command helps with that. Needs Wezterm installed
+vim.api.nvim_create_user_command("WezSplit", function()
+	vim.api.nvim_exec2("!wezterm cli split-pane --right --cwd `pwd`", {})
+end, {})
+
 -- autocommand to validate filename before saving
 -- TODO: validate only filename instead of entire path
 -- NOTE: this currently doesn't work on neovim see: https://github.com/neovim/neovim/issues/13928
