@@ -27,6 +27,24 @@ function Get-FirstArgumentCompleted
     return $false
 }
 
+# Helper funciton. Get current directory branches
+function Get-GitBranches
+{
+    # HELP: https://git-scm.com/docs/git-ls-files
+    $branches = git branch -a --format="%(refname:lstrip=2)"
+    $branches = $(foreach ( $branch in $branches)
+        {
+            if ($branch.StartsWith("origin/"))
+            {
+                $branch.Substring(7)
+            } else
+            {
+                $branch
+            }
+        }) | Select-Object -Unique
+    return $branches
+}
+
 # arg autocomplete for `op`
 # REQUIRES: `op` program to be in path
 $opCommandCompletion = {
@@ -85,9 +103,9 @@ $gitCommandCompletion = {
 
     if ($paramName -eq "switch")
     {
-        # HELP: https://git-scm.com/docs/git-ls-files
-        $files =  @(git branch -a --format="%(refname:lstrip=-1)" | Where-Object {$_ -like "$wordToComplete*"})
-        return $files
+        $branches = Get-GitBranches
+        $branches = @($branches | Where-Object {$_ -like "$wordToComplete*"})
+        return $branches
     }
 
     if ($paramName -eq "restore")
