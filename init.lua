@@ -509,7 +509,7 @@ require("lazy").setup({
 			})
 			-- harpoon keymaps
 			vim.keymap.set("n", "<leader>i", function()
-				harpoon:list():append()
+				harpoon:list():add()
 			end, { desc = "[I]nsert file to harpoon" })
 			vim.keymap.set("n", "<leader>m", function()
 				harpoon.ui:toggle_quick_menu(harpoon:list())
@@ -688,7 +688,7 @@ require("lazy").setup({
 				pyright = {},
 				rust_analyzer = {},
 				emmet_language_server = {
-					filetypes = { "css", "html", "sass", "scss" },
+					filetypes = { "css", "html", "sass", "scss", "htmldjango" },
 				},
 				tsserver = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -866,6 +866,8 @@ require("lazy").setup({
 					{ name = "path" },
 				},
 			})
+			require("luasnip.loaders.from_lua").lazy_load({ paths = { vim.fn.stdpath("config") .. "/snippets" } })
+			-- luasnip.filetype_extend("htmldjango", { "htmldjango" })
 		end,
 	},
 

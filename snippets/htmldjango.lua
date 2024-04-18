@@ -1,0 +1,113 @@
+local ls = require("luasnip")
+local s = ls.snippet
+local t = ls.text_node
+local i = ls.insert_node
+
+ls.add_snippets("htmldjango", {
+	s("dblock", {
+		t("{% block "),
+		i(1, "content"),
+		t(" %}"),
+		t({ "", "\t" }),
+		i(2),
+		t({ "", "{% endblock %}" }),
+	}),
+	s("dcomment", {
+		t("{% comment "),
+		i(1),
+		t(" %}"),
+		t({ "", "\t" }),
+		i(2),
+		t({ "", "{% endcomment %}" }),
+	}),
+	s("dcmt", {
+		t("{# "),
+		i(1),
+		t(" #}"),
+	}),
+	s("dcsrf", {
+		t("{% csrf_token %}"),
+	}),
+	s("dextends", {
+		t('{% extends "'),
+		i(1, "base.html"),
+		t('" %}'),
+	}),
+	s("dfor", {
+		t("{% for "),
+		i(1),
+		t(" in "),
+		i(2),
+		t(" %}"),
+		t({ "", "\t" }),
+		i(3),
+		t({ "", "{% enfor %}" }),
+	}),
+	s("dforempty", {
+		t("{% for "),
+		i(1),
+		t(" in "),
+		i(2),
+		t(" %}"),
+		t({ "", "\t" }),
+		i(3),
+		t({ "", "{% empty %}" }),
+		t({ "", "\t" }),
+		i(4),
+		t({ "", "{% enfor %}" }),
+	}),
+	s("dif", {
+		t("{% if "),
+		i(1),
+		t(" %}"),
+		t({ "", "\t" }),
+		i(2),
+		t({ "", "{% else %}" }),
+		t({ "", "\t" }),
+		i(3),
+		t({ "", "{% endif %}" }),
+	}),
+	s("delif", {
+		t("{% if "),
+		i(1),
+		t(" %}"),
+		t({ "", "\t" }),
+		i(2),
+		t({ "", "{% elif " }),
+		i(3),
+		t(" %}"),
+		t({ "", "\t" }),
+		i(4),
+		t({ "", "{% else %}" }),
+		t({ "", "\t" }),
+		i(5),
+		t({ "", "{% endif %}" }),
+	}),
+	s("dtag", {
+		t("{% "),
+		i(1),
+		t(" %}"),
+	}),
+	s("dvar", {
+		t("{{ "),
+		i(1),
+		t(" }}"),
+	}),
+	s("durl", {
+		t("{% url '"),
+		i(1),
+		t("' "),
+		i(2),
+		t("%}"),
+	}),
+	s("dload", {
+		t("{% load "),
+		i(1, "static"),
+		t(" %}"),
+	}),
+	s("dinclude", {
+		t("{% load '"),
+		i(1),
+		t("' %}"),
+	}),
+})
