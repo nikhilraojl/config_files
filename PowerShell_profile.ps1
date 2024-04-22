@@ -8,8 +8,7 @@ $PSStyle.FileInfo.Directory = ''
 
 # helper function to stop auto complete
 function Get-FirstArgumentCompleted
-{
-    param ($wordToComplete, $spaces)
+{   param ($wordToComplete, $spaces)
     
     # These couple of `if` blocks are there to check if first parameter is
     # autocompleted. We can use this to stop further autocompletion or generate
@@ -79,7 +78,7 @@ $gitCommandCompletion = {
     # autocompletions for first arguments
     if (-not (Get-FirstArgumentCompleted $wordToComplete $spaces))
     {
-        $possibleCommands = 'add','branch','checkout','commit','diff','rebase','remote','reset','restore','stash', 'status','switch'
+        $possibleCommands = 'add','branch','checkout','commit','diff', 'log', 'rebase','remote','reset','restore','stash', 'status','switch'
         $branches =  @( $possibleCommands | Where-Object {$_ -like "$wordToComplete*"})
         return $branches
     }

@@ -688,7 +688,7 @@ require("lazy").setup({
 				pyright = {},
 				rust_analyzer = {},
 				emmet_language_server = {
-					filetypes = { "css", "html", "sass", "scss", "htmldjango" },
+					filetypes = { "css", "html", "sass", "scss", "htmldjango", "rust" },
 				},
 				tsserver = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
