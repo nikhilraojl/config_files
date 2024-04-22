@@ -40,6 +40,14 @@ local function split_and_activate_venv(pane, direction)
 end
 
 ----------------------------------------------------------------------------
+-- WEZTERM EVENTS
+----------------------------------------------------------------------------
+wezterm.on("split", function(_, pane, direction)
+	local fgp_cwd = pane:get_foreground_process_info().cwd
+	pane:split({ direction = direction, cwd = fgp_cwd })
+end)
+
+----------------------------------------------------------------------------
 -- CONFIGURATION
 ----------------------------------------------------------------------------
 local config = {}
@@ -174,10 +182,20 @@ config.keys = {
 	},
 
 	-- Pane handling keymaps
-	-- TODO: SplitPane switches to correct directory on windows but not on linux
-	-- find a workround if and when switching to linux environment
-	{ key = "+", mods = "ALT|SHIFT", action = act.SplitPane({ direction = "Right" }) },
-	{ key = "_", mods = "ALT|SHIFT", action = act.SplitPane({ direction = "Down" }) },
+	{
+		key = "+",
+		mods = "ALT|SHIFT",
+		action = wezterm.action_callback(function(window, pane)
+			wezterm.emit("split", window, pane, "Right")
+		end),
+	},
+	{
+		key = "_",
+		mods = "ALT|SHIFT",
+		action = wezterm.action_callback(function(window, pane)
+			wezterm.emit("split", window, pane, "Bottom")
+		end),
+	},
 	{ key = "h", mods = "ALT|SHIFT", action = act.AdjustPaneSize({ "Left", 10 }) },
 	{ key = "l", mods = "ALT|SHIFT", action = act.AdjustPaneSize({ "Right", 10 }) },
 	{ key = "j", mods = "ALT|SHIFT", action = act.AdjustPaneSize({ "Down", 3 }) },
@@ -214,4 +232,5 @@ config.keys = {
 		end),
 	},
 }
+
 return config
