@@ -90,6 +90,10 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
+-- netrw config
+-- hide netrw_banner banner which takes 5 lines by default
+vim.g.netrw_banner = 0
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -147,6 +151,9 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 20
+
+-- Show a coloured column at line 80
+vim.opt.colorcolumn = "80"
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -459,9 +466,15 @@ require("lazy").setup({
 
 			-- See `:help telescope.builtin`
 			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
+			vim.keymap.set("n", "<leader>ht", builtin.help_tags, { desc = "Search [H]elp [T]ags" })
 			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
 			vim.keymap.set("n", "<leader>p", builtin.find_files, { desc = "Search files in [P]ath" })
+			vim.keymap.set("n", "<leader>sh", function()
+				builtin.find_files({ hidden = true, prompt_title = "Hidden Files" })
+			end, { desc = "[S]earch [H]idden files in Path" })
+			vim.keymap.set("n", "<leader>si", function()
+				builtin.find_files({ no_ignore = true, prompt_title = "Ingored Files" })
+			end, { desc = "[S]earch [I]gnored files Path" })
 			vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
 			vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
 			vim.keymap.set("n", "<leader>f", builtin.live_grep, { desc = "[S]earch by [G]rep" })
