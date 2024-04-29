@@ -138,6 +138,37 @@ $gitCommandCompletion = {
 }
 Register-ArgumentCompleter -Native -CommandName git -ScriptBlock $gitCommandCompletion
 
+# autocomplete hostnames for ssh
+# reads `Host` values from ~/.ssh/config
+$sshHostNameCompletion = {
+    # For why should we use these 3 specific parameters 
+    # see powershell docs for `register-argumentcompleter` for `Native` command
+    param ( $wordToComplete,
+        $commandAst,
+        $cursorPosition )
+    
+    $stringifiedAst = $commandAst.ToString().Split(" ")
+    $spaces = $stringifiedAst.GetUpperBound(0)
+
+    # autocompletions for first arguments
+    if (-not (Get-FirstArgumentCompleted $wordToComplete $spaces))
+    {
+        $file = Get-Content -Path ~\.ssh\config
+        $results = $(foreach ($line in $file)
+            {
+                if ($line.StartsWith("Host "))
+                {
+                    $line.Substring(5)
+                }
+            })
+        return $results
+    }
+    return
+
+
+}
+Register-ArgumentCompleter -Native -CommandName ssh -ScriptBlock $sshHostNameCompletion
+
 # Complete full line predictive text
 Set-PSReadLineKeyHandler -Key Ctrl+l `
     -BriefDescription RemapForwardToCtrlL `
