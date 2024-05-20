@@ -1023,6 +1023,13 @@ vim.api.nvim_create_user_command("Vst", function()
 	end
 end, {})
 
+-- Command :Pva => [P]yright [V]irtualenv [A]ctivate
+-- See :help nvim_create_user_command & :help nvim_exec2
+-- Needs pyright to be default python lsp
+vim.api.nvim_create_user_command("Pva", function()
+	vim.api.nvim_exec2("PyrightSetPythonPath venv/Scripts/python", {})
+end, {})
+
 -- Command :WezSplit => [Wez]term [Split] pane
 -- See :help nvim_create_user_command & :help nvim_exec2
 -- WHY : Sometimes in a linux shell, splitting a pane does not chdir to opened neovim project
