@@ -559,6 +559,10 @@ require("lazy").setup({
 		end,
 	},
 
+	-- Plugin to view context of current code body
+	-- Works by showing function/class definitions at top of current window
+	{ "nvim-treesitter/nvim-treesitter-context" },
+
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
