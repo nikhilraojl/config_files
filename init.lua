@@ -171,7 +171,7 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "[e", vim.diagnostic.goto_prev, { desc = "Go to previous Diagnostic/[E]rror message" })
 vim.keymap.set("n", "]e", vim.diagnostic.goto_next, { desc = "Go to next Diagnostic/[E]rror message" })
 vim.keymap.set("n", "<leader>E", vim.diagnostic.open_float, { desc = "Show Diagnostic/[E]rror messages" })
-vim.keymap.set("n", "<leader>el", vim.diagnostic.setloclist, { desc = "Open Diagnostic/[E]rror Quickfix [L]ist" })
+vim.keymap.set("n", "<leader>El", vim.diagnostic.setloclist, { desc = "Open Diagnostic/[E]rror Quickfix [L]ist" })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -264,7 +264,10 @@ vim.keymap.set("x", "<leader>vb", "<C-V>", { desc = "[V]isual [B]lock mode" })
 vim.keymap.set({ "n", "v" }, "x", '"_x', { silent = true })
 
 -- Remap netrw window
-vim.keymap.set("n", "<leader>e", vim.cmd.Ex, { desc = "Open netrw file [EX]plorer" })
+vim.keymap.set("n", "<leader>e", vim.cmd.Ex, { desc = "Open netrw file [E]xplorer" })
+vim.keymap.set("n", "<leader>le", function()
+	vim.cmd.Lexplore({ bang = true, count = 20 })
+end, { desc = "Open file to [LE]xplore to right" })
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -377,18 +380,9 @@ require("lazy").setup({
 
 	{ -- Useful plugin to show you pending keybinds.
 		"folke/which-key.nvim",
-		event = "VimEnter", -- Sets the loading event to 'VeryLazy'
+		event = "VeryLazy", -- Sets the loading event to 'VeryLazy'
 		config = function() -- This is the function that runs, AFTER loading
 			require("which-key").setup()
-
-			-- Document existing key chains
-			require("which-key").register({
-				["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-				["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-				["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-				["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-				["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-			})
 		end,
 	},
 
@@ -559,10 +553,6 @@ require("lazy").setup({
 		end,
 	},
 
-	-- Plugin to view context of current code body
-	-- Works by showing function/class definitions at top of current window
-	{ "nvim-treesitter/nvim-treesitter-context" },
-
 	{ -- LSP Configuration & Plugins
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -712,7 +702,7 @@ require("lazy").setup({
 				emmet_language_server = {
 					filetypes = { "css", "html", "sass", "scss", "htmldjango", "rust" },
 				},
-				tsserver = {},
+				-- tsserver = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
 				-- Some languages (like typescript) have entire language plugins that can be useful:
