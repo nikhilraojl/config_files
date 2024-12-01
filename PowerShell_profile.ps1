@@ -170,7 +170,7 @@ $sshHostNameCompletion = {
 Register-ArgumentCompleter -Native -CommandName ssh -ScriptBlock $sshHostNameCompletion
 
 # Complete full line predictive text
-Set-PSReadLineKeyHandler -Key Ctrl+l `
+Set-PSReadLineKeyHandler -Key Ctrl+j `
     -BriefDescription RemapForwardToCtrlL `
     -ScriptBlock {
     param($key, $arg)
@@ -179,7 +179,7 @@ Set-PSReadLineKeyHandler -Key Ctrl+l `
 }
 
 # Complete single word predictive text
-Set-PSReadLineKeyHandler -Key Ctrl+Shift+l `
+Set-PSReadLineKeyHandler -Key Ctrl+Shift+j `
     -BriefDescription RemapAceeptNextCharToCtrlL `
     -ScriptBlock {
     param($key, $arg)
