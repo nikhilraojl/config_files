@@ -43,8 +43,14 @@ end
 -- WEZTERM EVENTS
 ----------------------------------------------------------------------------
 wezterm.on("split", function(_, pane, direction)
-	local fgp_cwd = pane:get_foreground_process_info().cwd
-	pane:split({ direction = direction, cwd = fgp_cwd })
+	local fgp_cwd = pane:get_foreground_process_info()
+	if fgp_cwd then
+		-- Why? get_foreground_process_info will be `nil`
+		-- when using `wezterm ssh <server>`
+		pane:split({ direction = direction, cwd = fgp_cwd.cwd })
+	else
+		pane:split({ direction = direction })
+	end
 end)
 
 ----------------------------------------------------------------------------
