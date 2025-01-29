@@ -141,6 +141,7 @@ config.keys = {
 	{ key = "-", mods = "CTRL", action = act.DecreaseFontSize },
 	{ key = "_", mods = "SHIFT|CTRL", action = act.DecreaseFontSize },
 	{ key = "0", mods = "CTRL", action = act.ResetFontSize },
+	{ key = "0", mods = "SHIFT|CTRL", action = act.ResetFontSize },
 	-- scroll related keymaps
 	{ key = "PageUp", mods = "", action = act.ScrollByPage(-1) },
 	{ key = "u", mods = "ALT", action = act.ScrollByPage(-1) },
@@ -227,14 +228,14 @@ config.keys = {
 		key = "0",
 		mods = "ALT",
 		action = wezterm.action_callback(function(_, pane)
-			split_and_activate_venv(pane, "Right")
+			split_and_activate_venv(pane, "Bottom")
 		end),
 	},
 	{
 		key = ")",
 		mods = "ALT|SHIFT",
 		action = wezterm.action_callback(function(_, pane)
-			split_and_activate_venv(pane, "Bottom")
+			split_and_activate_venv(pane, "Right")
 		end),
 	},
 }
