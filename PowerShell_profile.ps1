@@ -202,3 +202,4 @@ function Get-AdminWezterm
     Start-process wezterm -WindowStyle Hidden -Verb runAs
 }
 Set-Alias -Name sudow -Value Get-AdminWezterm
+Set-Alias grep Select-String
