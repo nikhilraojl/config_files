@@ -733,6 +733,9 @@ require("lazy").setup({
 							-- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
 							-- diagnostics = { disable = { 'missing-fields' } },
 						},
+						["rust-analyzer"] = {
+							cargo = { buildScripts = { useRustcWrapper = "true" } },
+						},
 					},
 				},
 			}
@@ -779,7 +782,7 @@ require("lazy").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
 				-- Conform can also run multiple formatters sequentially
-				python = { "black" },
+				python = {},
 				--
 				-- You can use a sub-list to tell conform to run *until* a formatter
 				-- is found.

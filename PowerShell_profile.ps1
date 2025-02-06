@@ -3,6 +3,9 @@
 # $VS_BUILDTOOLS_DIR: Location of Visual Studio Build Tools, needed for setting up domains in wezterm
 # $HOME: home directory, used by many scripts
 
+$KB_LAYOUT = [Environment]::GetEnvironmentVariable("KB_LAYOUT")
+
+
 # For disabling colors for directories
 $PSStyle.FileInfo.Directory = ''
 
@@ -203,3 +206,4 @@ function Get-AdminWezterm
 }
 Set-Alias -Name sudow -Value Get-AdminWezterm
 Set-Alias grep Select-String
+Set-Alias kblayout $KB_LAYOUT
