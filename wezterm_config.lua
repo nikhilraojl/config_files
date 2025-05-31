@@ -115,7 +115,6 @@ end
 config.font = wezterm.font_with_fallback({
 	"Cascadia Mono",
 })
-config.color_scheme = "Batman"
 config.enable_scroll_bar = true
 config.colors = {
 	scrollbar_thumb = theme_color,
